@@ -21,7 +21,9 @@ function App() {
                 <AppFilter/>
             </div>
 
-            <EmploersList data={data}/>
+            <EmploersList 
+                data={data}
+                onDelete={id => console.log(id)}/>
             <EmployersAddForm/>
         </div>
     )
