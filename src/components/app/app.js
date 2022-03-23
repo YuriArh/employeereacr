@@ -1,3 +1,5 @@
+import {Component} from  'react';
+
 import AppInfo from '../app-info/app-info';
 import SearchPanel from '../search-panel/search-panel';
 import AppFilter from '../app-filter/app-filter';
@@ -6,27 +8,88 @@ import EmployersAddForm from '../employers-add-form/employers-add-form';
 
 import './app.css';
 
-function App() {
-    const data = [
-        {name: 'Попка', salary: 1000, increase: false, id: 1},
-        {name: 'Зилибобка', salary: 500, increase: false, id: 2},
-        {name: 'Говненка', salary: 600, increase: true, id: 3}
-    ];
-    return (
-        <div className="app">
-            <AppInfo/>
+class App extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            data: [
+                {name: 'Попка', salary: 1000, increase: false, rise: false, id: 1},
+                {name: 'Зилибобка', salary: 500, increase: false, rise: true, id: 2},
+                {name: 'Говненка', salary: 600, increase: true, rise: false, id: 3}
+            ]
+        }
 
-            <div className="search-panel">
-                <SearchPanel/>
-                <AppFilter/>
+        this.maxId = 4
+    }
+
+deleteItem = (id) => {
+    this.setState(({data}) => {
+        return {
+            data: data.filter(item => item.id !== id)
+        }
+    })
+}
+
+addItem = (name, salary) => {
+    const newItem = {
+        name,
+        salary,
+        rise: false,
+        increase: false,
+        id: this.maxId++
+    }
+    this.setState(({data}) => {
+        return {
+            data: [...data, newItem]
+        }
+    })
+}
+
+onToggleProp = (id, prop) => {
+    this.setState(({data}) => ({
+        data: data.map(item => {
+            if (item.id === id) {
+                return {...item, [prop]: !item[prop]}
+            }
+            return item;
+        })
+    }))
+}
+
+onToggleRise = (id) => {
+    this.setState(({data}) => ({
+        data: data.map(item => {
+            if (item.id === id) {
+                return {...item, rise: !item.rise}
+            }
+            return item;
+        })
+    }))
+}
+
+    render() {
+        const {data} = this.state
+        const increasedEmployees = data.filter(item => item.increase === true)
+        return (
+            <div className="app">
+                <AppInfo 
+                number={data.length}
+                increasedNumber={increasedEmployees.length}/>
+    
+                <div className="search-panel">
+                    <SearchPanel/>
+                    <AppFilter/>
+                </div>
+    
+                <EmploersList
+                    data={this.state.data}
+                    onDelete={this.deleteItem}
+                    onToggleProp={this.onToggleProp}/>
+                <EmployersAddForm
+                    onAdd={this.addItem}/>
             </div>
-
-            <EmploersList 
-                data={data}
-                onDelete={id => console.log(id)}/>
-            <EmployersAddForm/>
-        </div>
-    )
+        )
+    }
 };
 
 export default App;
