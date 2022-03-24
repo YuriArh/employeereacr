@@ -7,7 +7,9 @@ class EmployersAddForm extends Component{
         super(props)
         this.state = {
             name: '',
-            salary: ''
+            salary: '',
+            namePlaceholder: 'Как его зовут?',
+            salaryPlaceholder: 'З/П в $'
         }
     }
 
@@ -20,15 +22,19 @@ class EmployersAddForm extends Component{
     onSubmit = (e) => {
         e.preventDefault()
         console.log(this.state.name)
-        this.props.onAdd(this.state.name, this.state.salary)
-        this.setState({
-            name: '',
-            salary: ''
-        })
+        if (this.state.name.length > 3 && this.state.salary.length > 2) {
+            this.props.onAdd(this.state.name, this.state.salary)
+            this.setState({
+                name: '',
+                salary: ''
+            })
+        } 
     }
+
+
     
     render() {
-        const{name, salary} = this.state
+        const{name, salary, namePlaceholder, salaryPlaceholder} = this.state
         return (
             <div className="app-add-form">
                 <h3>Добавьте нового сотрудника</h3>
@@ -37,13 +43,13 @@ class EmployersAddForm extends Component{
                     onSubmit={this.onSubmit}>
                     <input type="text"
                         className="form-control new-post-label"
-                        placeholder="Как его зовут?"
+                        placeholder={namePlaceholder}
                         name="name"
                         value={name}
                         onChange={this.onValueChange} />
                     <input type="number"
                         className="form-control new-post-label"
-                        placeholder="З/П в $?"
+                        placeholder={salaryPlaceholder}
                         name="salary"
                         value={salary}
                         onChange={this.onValueChange} />
